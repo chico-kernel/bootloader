@@ -1,33 +1,32 @@
-BOOT_DIR := boot
-BOOT_ENTRY := $(BOOT_DIR)/boot.asm
-
-BUILD_DIR := build
 BIN_DIR := bin
+BOOT_DIR := boot
 
 AS := nasm
-AS_FLAGS := -f bin
+ASFLAGS := -f elf64
 
 LD := ld
-LD_FLAGS := -Ttext 0x7C00 --oformat binary
+LDFLAGS := -T linker.ld
 
-EMU := qemu-system-x86_64
-EMU_FLAGS := -name Chico
-
-.PHONY: all clean
+QEMU := qemu-system-x86_64
+QEMUFLAGS := -name Chico -drive format=raw,file=$(BIN_DIR)/boot.img
 
 all: $(BIN_DIR)/boot.img
 
-$(BIN_DIR)/boot.img: $(BIN_DIR)/boot.bin
+$(BIN_DIR)/boot.img: $(patsubst $(BOOT_DIR)/%.asm, $(BIN_DIR)/%.bin, $(wildcard $(BOOT_DIR)/*.asm))
 	@printf "  LD\t$@\n"
-	@$(LD) $(LD_FLAGS) -o $@ $<
+	@$(LD) $(LDFLAGS) -o $@ $^
+	@truncate -s 1474560 $@
+	@printf '\x55\xaa' | dd of=$@ bs=1 seek=510 conv=notrunc status=none
 
-$(BIN_DIR)/boot.bin: $(BOOT_ENTRY)
-	@mkdir -p $(BIN_DIR) $(BUILD_DIR)
-	@printf "  AS\t$(BOOT_ENTRY)\n"
-	@$(AS) $(AS_FLAGS) -o $@ $<
-
-clean:
-	@rm -rf $(BIN_DIR) $(BUILD_DIR)
+$(BIN_DIR)/%.bin: $(BOOT_DIR)/%.asm
+	@printf "  AS\t$<\n"
+	@$(AS) $(ASFLAGS) -o $@ $<
 
 run: $(BIN_DIR)/boot.img
-	@$(EMU) $(EMU_FLAGS) -drive format=raw,file=$<
+	@printf "  QEMU\t$<\n"
+	@$(QEMU) $(QEMUFLAGS)
+
+clean:
+	@rm -f $(BIN_DIR)/*
+
+.PHONY: all run clean
