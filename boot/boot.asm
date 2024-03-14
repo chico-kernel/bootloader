@@ -11,7 +11,7 @@ _start:
     call enable_a20
     call enable_gdt
     call enable_protected
-    jmp 08h:load_kernel
+    jmp load_kernel
  
 load_kernel:
     hlt     ; Load kernel
