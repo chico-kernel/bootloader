@@ -44,6 +44,7 @@ section .text
 enable_gdt:
     jmp .set_gdt
     jmp 0x08:.reload_cs
+    ret
 
 .reload_cs:
    mov   ax, 0x10
