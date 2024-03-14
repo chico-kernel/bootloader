@@ -2,12 +2,12 @@ BIN_DIR := bin
 BOOT_DIR := boot
 
 AS := nasm
-ASFLAGS := -f elf64
+ASFLAGS := -f elf32
 
 LD := ld
-LDFLAGS := -T linker.ld
+LDFLAGS := -T linker.ld -m elf_i386
 
-QEMU := qemu-system-x86_64
+QEMU := qemu-system-i386
 QEMUFLAGS := -name Chico -drive format=raw,file=$(BIN_DIR)/boot.img
 
 all: $(BIN_DIR)/boot.img

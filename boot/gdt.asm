@@ -1,65 +1,67 @@
 ; Copyright © 2024 Kevin Alavik. All rights reserved.
-
-; Define the GDTR (Global Descriptor Table Register) structure
 section .data
-    ; GDTR structure to hold the base address and limit of the GDT
-    gdt_ptr:
-        dw 0       ; GDT limit (2 bytes)
-        dd 0       ; GDT base address (4 bytes)
-
-; Text section containing the code
-section .text
-    ; Declare global symbol for the entry point
-    global enable_gdt
-    ; Externally define set_gdt function
-    extern set_gdt
-
-    ; Entry point function
-    enable_gdt:
-        ; Call the set_gdt function to set up the GDT
-        call set_gdt
-        ; Return from the enable_gdt function
-        ret
-
-    ; Function to set up the GDT
-    set_gdt:
-        ; Clear EAX register
-        xor   eax, eax
-        ; Load DS segment into EAX
-        mov   ax, ds
-        ; Multiply DS by 16 to get linear address
-        shl   eax, 4
-        ; Add the offset of 'gdt' label to get linear address of GDT
-        add   eax, gdt
-        ; Store linear address of GDT in second DWORD of gdt_ptr
-        mov   [gdt_ptr + 2], eax
-
-        ; Load the offset of 'gdt_end' label into EAX
-        mov   eax, gdt_end
-        ; Calculate size of GDT by subtracting offset of 'gdt' label
-        sub   eax, gdt
-        ; Store size of GDT in first WORD of gdt_ptr
-        mov   [gdt_ptr], ax
-
-        ; Load GDTR with address stored in gdt_ptr
-        lgdt  [gdt_ptr]
-        ; Return from the set_gdt function
-        ret
-
-; Data section containing the GDT
-section .data
-    ; Define the Global Descriptor Table (GDT)
     gdt:
-        ; Null Descriptor
-        dw 0x0000, 0x0000, 0x0000, 0x0000
-        ; Kernel Mode Code Segment
-        dw 0xFFFF, 0x0000, 0x0000, 0x9A00
-        ; Kernel Mode Data Segment
-        dw 0xFFFF, 0x0000, 0x0000, 0x9200
-        ; User Mode Code Segment
-        dw 0xFFFF, 0x0000, 0x0000, 0xFA00
-        ; User Mode Data Segment
-        dw 0xFFFF, 0x0000, 0x0000, 0xF200
+        null:
+            dd 0x00000000
+            dw 0x00000
+            db 0x00
+            db 0x00
+        kernel_code:
+            dd 0x00000000
+            dw 0xFFFF
+            db 0x9A
+            db 0xC0
+        kernel_data:
+            dd 0x0000000
+            dw 0xFFFF
+            db 0x92
+            db 0xC0
+        user_code:
+            dd 0x0000000
+            dw 0xFFFF
+            db 0xFA
+            db 0xC0
+        user_data:
+            dd 0x0000000
+            dw 0xFFFF
+            db 0xF2
+            db 0xC0
+        task_state:
+            dd 0x00000000       ; Replace with pointer to TSS
+            dw 0x0000           ; Replace with size of TSS
+            db 0x89
+            db 0x00
+    
+gdt_end equ gdt + 7 * 8 ;
+section .data
+    gdtr:
+        dw 39
+        dd gdt
 
-    ; Define the end of the GDT
-    gdt_end:
+section .text
+    global enable_gdt
+
+enable_gdt:
+    jmp .set_gdt
+    jmp 0x08:.reload_cs
+
+.reload_cs:
+   mov   ax, 0x10
+   mov   ds, ax
+   mov   es, ax
+   mov   fs, ax
+   mov   gs, ax
+   mov   ss, ax
+   ret
+
+.set_gdt:
+    xor   eax, eax
+    mov   ax, ds
+    shl   eax, 4
+    add   eax, gdt
+    mov   [gdtr + 2], eax
+    mov   eax, gdt_end
+    sub   eax, gdt
+    mov   [gdtr], ax
+    lgdt  [gdtr]
+    ret
