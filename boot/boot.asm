@@ -1,4 +1,4 @@
-; Copyright © 2024 Kevin Alavik. All rights reserved.
+; Entry file for the Chico Bootloader
 
 [bits 16]
 section .text
