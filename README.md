@@ -2,8 +2,8 @@
 Bootloader for the Chico Kernel. Loads you into 32 bit, protected mode.
 
 ## Current Support
-- Legacy 16bit - Real mode.
-- soon GDT
+- 32bit Protected Mode
+- GDT
 
 
 ## Exclaimer
