@@ -1,4 +1,7 @@
 [bits 16]
+section .text
+    extern enable_protected
+
 section .data
     gdt:
         null:
@@ -43,6 +46,7 @@ section .text
 
 enable_gdt:
     jmp .set_gdt
+    call enable_protected
     jmp 0x08:.reload_cs
     ret
 
