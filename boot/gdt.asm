@@ -1,4 +1,3 @@
-; Copyright © 2024 Kevin Alavik. All rights reserved.
 section .data
     gdt:
         null:
