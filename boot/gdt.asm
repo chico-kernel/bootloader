@@ -1,3 +1,4 @@
+[bits 16]
 section .data
     gdt:
         null:
@@ -45,6 +46,7 @@ enable_gdt:
     jmp 0x08:.reload_cs
     ret
 
+[bits 32]
 .reload_cs:
    mov   ax, 0x10
    mov   ds, ax
@@ -54,6 +56,7 @@ enable_gdt:
    mov   ss, ax
    ret
 
+[bits 16]
 .set_gdt:
     xor   eax, eax
     mov   ax, ds
