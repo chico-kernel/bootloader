@@ -9,10 +9,10 @@ section .text
 
 _start:
     ; Get kernel sector
-    mov ah, 0x02
-    mov al, 0x10
     mov ax, 0
     mov es, ax
+    mov ah, 0x02
+    mov al, 10
     mov di, 0x7E00
     mov ch, 0
     mov dh, 0
