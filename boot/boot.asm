@@ -21,7 +21,4 @@ _start:
 
     call enable_a20
     call enable_gdt
-    jmp load_kernel
- 
-load_kernel:
-    jmp 0x7E00
+    jmp 0x0008:0x7E00
