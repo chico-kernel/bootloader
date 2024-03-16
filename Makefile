@@ -13,7 +13,7 @@ $(BIN_DIR)/boot.img: $(BOOT_DIR)/boot.asm
 	@printf "  AS\t$^\n"
 	@$(AS) $(ASFLAGS) -o $@ $<
 	@truncate -s 1474560 $@
-	@printf '\x55\xaa' | dd of=$@ bs=1 seek=510 conv=notrunc status=none
+	@printf '\x55\xaa' | dd of=$@ bs=1 seek=512 conv=notrunc status=none
 
 run: $(BIN_DIR)/boot.img
 	@printf "  QEMU\t$<\n"
