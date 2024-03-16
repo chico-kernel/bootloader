@@ -42,7 +42,7 @@ section .text
     global enable_gdt
 
 enable_gdt:
-    jmp .set_gdt
+    call .set_gdt
     call enable_protected
     jmp 0x08:.reload_cs
     ret
