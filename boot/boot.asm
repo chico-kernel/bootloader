@@ -65,6 +65,9 @@ kernel_entry:
     mov al, 'F'
     int 0x10 
     jmp 8:0x7E00
+    mov ah, 0x0e
+    mov al, 'G'
+    int 0x10
     
 %include "boot/a20.asm"
 %include "boot/gdt.asm"

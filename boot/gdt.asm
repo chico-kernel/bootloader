@@ -67,6 +67,5 @@ enable_gdt:
     mov   eax, gdt_end
     sub   eax, gdt
     mov   [gdtr], ax
-    cli
     lgdt  [gdtr]
     ret
