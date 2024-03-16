@@ -35,7 +35,7 @@ _start:
     mov es, ax
     mov ah, 0x02
     mov al, 10
-    mov di, 0x7E00
+    mov bx, 0x7E00
     mov ch, 0
     mov dh, 0
     mov cl, 2
