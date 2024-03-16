@@ -47,6 +47,7 @@ _start:
     mov al, 'D'
     int 0x10
 
+    ; Enable GDT
     call enable_gdt
     mov ah, 0x0e
     mov al, 'E'
@@ -75,15 +76,13 @@ enable_a20:
     out 0x92, al
     ret
 
-enable_protected:
-    mov eax, cr0
-    or eax, 0x1
-    mov cr0, eax
-    ret
-
 enable_gdt:
     call .set_gdt
-    call enable_protected
+    cli
+    lgdt [gdtr]
+    mov eax, cr0
+    or al, 0x1
+    mov cr0, eax
     jmp 0x08:.reload_cs
     ret
 
@@ -105,7 +104,6 @@ enable_gdt:
     mov eax, gdt_end
     sub eax, gdt
     mov [gdtr], ax
-    lgdt [gdtr]
     ret
 
 section .data
