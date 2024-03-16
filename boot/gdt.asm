@@ -1,7 +1,4 @@
 [bits 16]
-section .text
-    extern enable_protected
-
 section .data
     gdt:
         null:

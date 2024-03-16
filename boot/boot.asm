@@ -1,9 +1,8 @@
 [bits 16]
+[org 0x7c00]
+
 section .text
     global _start
-    extern enable_a20
-    extern enable_gdt
-    extern enable_protected
 
 _start:
     ; Set video mode to mode 3 (80x25 text mode)
@@ -56,3 +55,7 @@ kernel_load_error:
     mov al, '!'
     int 0x10
     hlt
+    
+%include "boot/a20.asm"
+%include "boot/gdt.asm"
+%include "boot/protected.asm"
