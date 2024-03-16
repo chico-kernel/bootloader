@@ -5,7 +5,7 @@ AS := nasm
 ASFLAGS := -f bin
 
 QEMU := qemu-system-i386
-QEMUFLAGS := -name Chico -drive format=raw,file=$(BIN_DIR)/boot.img
+QEMUFLAGS := -name "Chico Bootloader" -drive format=raw,file=$(BIN_DIR)/boot.img
 
 all: $(BIN_DIR)/boot.img
 
