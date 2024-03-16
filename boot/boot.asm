@@ -48,13 +48,23 @@ _start:
     int 0x10 
     
     call enable_gdt
-    jmp 8:0x7E00
+    mov ah, 0x0e
+    mov al, 'E'
+    int 0x10 
+
+    jmp kernel_entry
 
 kernel_load_error:
     mov ah, 0x0E
     mov al, '!'
     int 0x10
     hlt
+
+kernel_entry:
+    mov ah, 0x0e
+    mov al, 'F'
+    int 0x10 
+    jmp 8:0x7E00
     
 %include "boot/a20.asm"
 %include "boot/gdt.asm"
