@@ -23,13 +23,6 @@ _start:
     mov al, 'B'
     int 0x10
 
-    ; Enable A20
-    call enable_a20
-
-    mov ah, 0x0e
-    mov al, 'C'
-    int 0x10
-
     ; Get kernel sector
     mov ax, 0
     mov es, ax
@@ -44,13 +37,13 @@ _start:
     jc kernel_load_error
 
     mov ah, 0x0e
-    mov al, 'D'
+    mov al, 'C'
     int 0x10
 
     ; Enable GDT
     call enable_gdt
     mov ah, 0x0e
-    mov al, 'E'
+    mov al, 'D'
     int 0x10
 
     jmp kernel_entry
@@ -62,13 +55,8 @@ kernel_load_error:
     hlt
 
 kernel_entry:
-    mov ah, 0x0e
-    mov al, 'F'
-    int 0x10
+    ; Jump to kernel kernel_entry
     jmp 8:0x7E00
-    mov ah, 0x0e
-    mov al, 'G'
-    int 0x10
 
 enable_a20:
     in al, 0x92
@@ -78,6 +66,7 @@ enable_a20:
 
 enable_gdt:
     call .set_gdt
+    call enable_a20
     cli
     lgdt [gdtr]
     mov eax, cr0
