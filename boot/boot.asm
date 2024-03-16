@@ -71,4 +71,3 @@ kernel_entry:
     
 %include "boot/a20.asm"
 %include "boot/gdt.asm"
-%include "boot/protected.asm"
