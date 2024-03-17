@@ -103,12 +103,12 @@ section .data
             db 0x00
             db 0x00
         kernel_code:
-            dd 0x0000FFFF
+            dd 0x000FFFFF
             dd 0x00000000
             db 0x9A
             db 0xCF
         kernel_data:
-            dd 0x0000FFFF
+            dd 0x000FFFFF
             dd 0x00000000
             db 0x92
             db 0xCF
