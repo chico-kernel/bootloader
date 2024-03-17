@@ -113,12 +113,12 @@ section .data
             db 0x92
             db 0xCF
         user_code:
-            dd 0x0000FFFF
+            dd 0x000FFFFF
             dd 0x00000000
             db 0xFA
             db 0xCF
         user_data:
-            dd 0x0000FFFF
+            dd 0x000FFFFF
             dd 0x00000000
             db 0xF2
             db 0xCF
