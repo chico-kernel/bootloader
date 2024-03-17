@@ -16,11 +16,11 @@ in al, 0x92
 or al, 2
 out 0x92, al
 
-; Load first 127 sectors into RAM
+; Load first 127 sectors into RAM (Broken: Why tf cant i read more the 1 sector?)
 mov ax, 0x0000
 mov es, ax      ; SEG
 mov ah, 2 
-mov al, 127       ; Sectors to read
+mov al, 127     ; Sectors to read
 mov bx, 0x7E00  ; OFF
 mov dl, [DISK]  ; Disk Number
 mov ch, 0       ; Cylinder
