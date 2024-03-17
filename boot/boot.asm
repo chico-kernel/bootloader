@@ -16,11 +16,11 @@ in al, 0x92
 or al, 2
 out 0x92, al
 
-; Load first 100 sectors into RAM
+; Load first 127 sectors into RAM
 mov ax, 0x0000
 mov es, ax      ; SEG
 mov ah, 2 
-mov al, 100     ; Sectors to read
+mov al, 127     ; Sectors to read
 mov bx, 0x7E00  ; OFF
 mov dl, [DISK]  ; Disk Number
 mov ch, 0       ; Cylinder
@@ -118,6 +118,7 @@ load_kernel:
     mov cr0, eax
     jmp 8:protected
 
+[bits 32]
 protected:
     mov ax, 16
     mov ds, ax
@@ -174,10 +175,13 @@ protected:
     mov al, '.'
     int 0x10
 
-    jmp 0x7E00  ; Jump to kernel
+    mov ax, 0x0000
+    mov es, ax
 
-DISK:
-    db 0        ; Define the disk number
+    mov bx, 0x7E00
+    jmp 0x0000:0x7E00
+
+DISK db 0        ; Define the disk number
 
 times 510-($-$$) db 0
 dw 0xaa55
