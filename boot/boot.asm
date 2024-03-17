@@ -20,166 +20,92 @@ out 0x92, al
 mov ax, 0x0000
 mov es, ax      ; SEG
 mov ah, 2 
-mov al, 127     ; Sectors to read
+mov al, 127       ; Sectors to read
 mov bx, 0x7E00  ; OFF
 mov dl, [DISK]  ; Disk Number
 mov ch, 0       ; Cylinder
 mov dh, 0       ; Head
 mov cl, 2       ; Sector (2 = Kernel Sector)
-
 int 0x13
-jc disk_read_fail
-jmp load_kernel
 
-disk_read_fail:
-    mov ah, 0x0E
-    mov al, 'F'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'a'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'i'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'l'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'd'
-    int 0x10
-    mov ah, 0x0E
-    mov al, ' '
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'T'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'o'
-    int 0x10
-    mov ah, 0x0E
-    mov al, ' '
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'R'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'e'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'a'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'd'
-    int 0x10
-    mov ah, 0x0E
-    mov al, ' '
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'D'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'i'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 's'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'k'
-    int 0x10
-    mov ah, 0x0E
-    mov al, '!'
-    int 0x10
-    hlt
+; Load more sectors. Credits to https://github.com/AptRock327/RaidouOS/tree/main
+mov bx, 0
 
-load_kernel:
-    dq 0x00
+mov ax, 0x17E0
+mov es, ax
+mov ah, 2
+mov al, 127
+mov dh, 2
+mov cl, 3
+int 0x13
 
-    dw 0xFFFF
-    dw 0x0000
-    db 0x00
-    db 0b10011011
-    db 0b11001111
-    db 0x00
-    
-    dw 0xFFFF
-    dw 0x0000
-    db 0x00
-    db 0b10010011
-    db 0b11001111
-    db 0x00
+mov ax, 0x27C0
+mov es, ax
+mov ah, 2
+mov al, 127
+mov dh, 4
+mov cl, 4
+int 0x13
 
-    dw 0x17
-    dd 0x7E00 ; Offset to where the kernel is loaded in memory
+mov ax, 0x37A0
+mov es, ax
+mov ah, 2
+mov al, 127
+mov dh, 6
+mov cl, 5
+int 0x13
 
-    cli
-    lgdt [0x7E18]
-    mov eax, cr0
-    or eax, 1
-    mov cr0, eax
-    jmp 8:protected
+mov ax, 0x4780
+mov es, ax
+mov ah, 2
+mov al, 127
+mov dh, 8
+mov cl, 6
+int 0x13
 
-[bits 32]
-protected:
-    mov ax, 16
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
-    mov ah, 0x0E
-    mov al, 'L'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'o'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'a'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'i'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'n'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'g'
-    int 0x10
-    mov ah, 0x0E
-    mov al, ' '
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'K'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'e'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'r'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'n'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'e'
-    int 0x10
-    mov ah, 0x0E
-    mov al, 'l'
-    int 0x10
-    mov ah, 0x0E
-    mov al, '.'
-    int 0x10
-    mov ah, 0x0E
-    mov al, '.'
-    int 0x10
-    mov ah, 0x0E
-    mov al, '.'
-    int 0x10
+mov ax, 0x5760
+mov es, ax
+mov ah, 2
+mov al, 127
+mov dh, 10
+mov cl, 7
+int 0x13
 
-    mov ax, 0x0000
-    mov es, ax
+mov ax, 0x6740
+mov es, ax
+mov ah, 2
+mov al, 127
+mov dh, 12
+mov cl, 8
+int 0x13
 
-    mov bx, 0x7E00
-    jmp 0x0000:0x7E00
+mov ax, 0x7720
+mov es, ax
+mov ah, 2
+mov al, 127
+mov dh, 14
+mov cl, 9
+int 0x13
+
+mov ax, 0x8700
+mov es, ax
+mov ah, 2
+mov al, 127
+mov ch, 1
+mov dh, 0
+mov cl, 10
+int 0x13
+
+mov ax, 0x96E0
+mov es, ax
+mov ah, 2
+mov al, 127
+mov ch, 1
+mov dh, 2
+mov cl, 11
+int 0x13
+
+jmp 0x801A       ; Jump to kernel loader
 
 DISK db 0        ; Define the disk number
 
