@@ -25,87 +25,72 @@ mov bx, 0x7E00  ; OFF
 mov dl, [DISK]  ; Disk Number
 mov ch, 0       ; Cylinder
 mov dh, 0       ; Head
-mov cl, 2       ; Sector (2 = Kernel Sector)
+mov cl, 2       ; Start Sector (2 = First Kernel Sector)
 int 0x13
 
-; Load more sectors. Credits to https://github.com/AptRock327/RaidouOS/tree/main
-mov bx, 0
+jc load_error ; Jump to load_error if carry flag is set (indicates error)
 
-mov ax, 0x17E0
-mov es, ax
-mov ah, 2
-mov al, 127
-mov dh, 2
-mov cl, 3
-int 0x13
+jmp 0x7E18 ; Jump to loader (after loading kernel)
 
-mov ax, 0x27C0
-mov es, ax
-mov ah, 2
-mov al, 127
-mov dh, 4
-mov cl, 4
-int 0x13
-
-mov ax, 0x37A0
-mov es, ax
-mov ah, 2
-mov al, 127
-mov dh, 6
-mov cl, 5
-int 0x13
-
-mov ax, 0x4780
-mov es, ax
-mov ah, 2
-mov al, 127
-mov dh, 8
-mov cl, 6
-int 0x13
-
-mov ax, 0x5760
-mov es, ax
-mov ah, 2
-mov al, 127
-mov dh, 10
-mov cl, 7
-int 0x13
-
-mov ax, 0x6740
-mov es, ax
-mov ah, 2
-mov al, 127
-mov dh, 12
-mov cl, 8
-int 0x13
-
-mov ax, 0x7720
-mov es, ax
-mov ah, 2
-mov al, 127
-mov dh, 14
-mov cl, 9
-int 0x13
-
-mov ax, 0x8700
-mov es, ax
-mov ah, 2
-mov al, 127
-mov ch, 1
-mov dh, 0
-mov cl, 10
-int 0x13
-
-mov ax, 0x96E0
-mov es, ax
-mov ah, 2
-mov al, 127
-mov ch, 1
-mov dh, 2
-mov cl, 11
-int 0x13
-
-jmp 0x801A       ; Jump to kernel loader
+load_error:
+    mov ah, 0x0E
+    mov al, 'F'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'a'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'i'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'l'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'd'
+    int 0x10
+    mov ah, 0x0E
+    mov al, ' '
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'T'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'o'
+    int 0x10
+    mov ah, 0x0E
+    mov al, ' '
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'R'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'e'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'a'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'd'
+    int 0x10
+    mov ah, 0x0E
+    mov al, ' '
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'D'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'i'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 's'
+    int 0x10
+    mov ah, 0x0E
+    mov al, 'k'
+    int 0x10
+    mov ah, 0x0E
+    mov al, '!'
+    int 0x10
+    jmp $        ; Loop indefinitely
 
 DISK db 0        ; Define the disk number
 
