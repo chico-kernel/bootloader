@@ -1,5 +1,5 @@
 BIN_DIR := bin
-BOOT_DIR := boot
+SRC_DIR := boot
 
 AS := nasm
 ASFLAGS := -f bin
@@ -9,17 +9,13 @@ QEMUFLAGS := -name "Chico Bootloader" -drive format=raw,file=$(BIN_DIR)/boot.img
 
 all: $(BIN_DIR)/boot.img
 
-$(BIN_DIR)/boot.img: $(BOOT_DIR)/boot.asm
-	@printf "  AS\t$^\n"
-	@$(AS) $(ASFLAGS) -o $@ $<
-	@truncate -s 1474560 $@
-	@printf '\x55\xaa' | dd of=$@ bs=1 seek=510 conv=notrunc status=none
+$(BIN_DIR)/boot.img: $(SRC_DIR)/boot.asm
+	$(AS) $(ASFLAGS) -o $@ $<
 
 run: $(BIN_DIR)/boot.img
-	@printf "  QEMU\t$<\n"
-	@$(QEMU) $(QEMUFLAGS)
+	$(QEMU) $(QEMUFLAGS)
 
+.PHONY: clean
 clean:
-	@rm -f $(BIN_DIR)/*
+	rm -rf $(BIN_DIR)/*
 
-.PHONY: all run clean
