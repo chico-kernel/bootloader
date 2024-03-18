@@ -16,17 +16,25 @@ in al, 0x92
 or al, 2
 out 0x92, al
 
-; Load first 127 sectors into RAM (Broken: Why tf cant i read more the 1 sector?)
-mov ax, 0x0000
-mov es, ax      ; SEG
-mov ah, 2
-mov al, 127     ; Sectors to read
-mov bx, 0x7E00  ; OFF
-mov dl, [DISK]  ; Disk Number
-mov ch, 0       ; Cylinder
-mov dh, 0       ; Head
-mov cl, 2       ; Start Sector (2 = First Kernel Sector)
-int 0x13
+; Load first 127 sectors into RAM
+
+read_loop:
+    mov ax, 0x0000
+    mov es, ax
+    mov ah, 2
+    mov al, [SECTORS_TO_READ]
+    mov dx, [DISK]
+
+    mov cx, 0
+    mov dh, 0
+
+    mov bx, 0x7E00
+    mov cl, 2
+    int 0x13
+
+    add bx, 512
+    dec al
+    jnz read_loop
 
 jc load_error   ; Jump to load_error if carry flag is set (indicates error)
 
@@ -38,7 +46,7 @@ load_error:
     call puts               ; Call puts to print error message
     jmp $                   ; Loop indefinitely
 
-error_message db 'Failed To Read Disk!', 0
+error_message db 'error: failed to read disk!', 0
 
 puts:
     pusha               ; Save registers
@@ -53,7 +61,8 @@ done:
     popa                ; Restore registers
     ret                 ; Return from subroutine
 
-DISK db 0        ; Define the disk number
+DISK db 0               ; Define the disk number
+SECTORS_TO_READ db 127  ; Define the ammount of sectors to read
 
 times 510-($-$$) db 0
 dw 0xaa55
