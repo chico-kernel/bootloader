@@ -1,8 +1,12 @@
 [bits 16]
 [SECTION .boot]
+section .data
+    gdt_message db 'Loading GDT...', 0
 section .text
     extern kernel_main
 
+mov si, gdt_message
+call puts
 dq 0x00
 dw 0xFFFF
 dw 0x0000
@@ -44,3 +48,16 @@ protected:
 kernel:
     call kernel_main
     jmp $
+
+puts:
+    pusha
+next_char:
+    lodsb
+    or al, al
+    jz done
+    mov ah, 0x0E
+    int 0x10
+    jmp next_char
+done:
+    popa
+    ret
